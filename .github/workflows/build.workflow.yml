@@ -1,0 +1,134 @@
+name: Build Godot Plugin
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-plugin:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            arch: x86_64
+          - os: macos-latest
+            platform: macos
+            arch: universal
+          - os: windows-latest
+            platform: windows
+            arch: x86_64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: neogeek/rhythm-game-utilities
+          fetch-depth: 0
+
+      - name: Check out submodules
+        run: |
+          git submodule update --init
+
+      - if: matrix.platform == 'linux'
+        name: Install dependencies (Linux)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev libwayland-dev
+
+      - if: matrix.platform == 'macos'
+        name: Install dependencies (macOS)
+        run: |
+          brew install scons
+
+      - if: matrix.platform == 'windows'
+        name: Install dependencies (Windows)
+        run: |
+          python -m pip install scons
+          choco install mingw
+
+      - name: Restore SCons Cache
+        uses: actions/cache/restore@v4.2.3
+        with:
+          path: |
+            GodotPlugin/.scons_cache/
+            GodotPlugin/.sconsign.dblite
+          key: ${{ matrix.os }}-scons-cache
+
+      - name: Restore Godot C++ Generated Files
+        uses: actions/cache/restore@v4.2.3
+        with:
+          path: |
+            GodotPlugin/godot-cpp/bin/
+            GodotPlugin/godot-cpp/gen/
+          key: ${{ matrix.os }}-godot-cpp-cache
+
+      - name: Build Plugin
+        working-directory: GodotPlugin/
+        shell: bash
+        run: |
+          scons platform=${{ matrix.platform }} target=template_release arch=${{ matrix.arch }}
+          scons platform=${{ matrix.platform }} target=template_debug arch=${{ matrix.arch }}
+
+      - name: Store SCons Cache
+        uses: actions/cache/save@v4.2.3
+        with:
+          path: |
+            GodotPlugin/.scons_cache/
+            GodotPlugin/.sconsign.dblite
+          key: ${{ matrix.os }}-scons-cache
+
+      - name: Store Godot C++ Generated Files
+        uses: actions/cache/save@v4.2.3
+        with:
+          path: |
+            GodotPlugin/godot-cpp/bin/
+            GodotPlugin/godot-cpp/gen/
+          key: ${{ matrix.os }}-godot-cpp-cache
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: build-${{ matrix.platform }}-${{ matrix.arch }}
+          path: GodotPlugin/build/
+          retention-days: 1
+
+  commit-changes:
+    needs: build-plugin
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4.2.1
+        with:
+          path: artifacts/
+
+      - name: Move artifacts to build directory
+        run: |
+          mkdir -p addons/RhythmGameUtilities
+          cp -r artifacts/*/* ./
+
+      - name: Setup git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Git commit changes
+        run: |
+          git pull
+          git add addons/
+          git commit -m "Updated build files [skip ci]" || exit 0
+          git push
