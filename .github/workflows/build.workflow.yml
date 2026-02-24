@@ -75,6 +75,12 @@ jobs:
           scons platform=${{ matrix.platform }} target=template_release arch=${{ matrix.arch }}
           scons platform=${{ matrix.platform }} target=template_debug arch=${{ matrix.arch }}
 
+      - if: matrix.platform == 'macos'
+        name: Sign generated files (macOS)
+        run: |
+          codesign --force --deep -s - GodotPlugin/build/addons/RhythmGameUtilities/libRhythmGameUtilities.macos.template_debug.framework
+          codesign --force --deep -s - GodotPlugin/build/addons/RhythmGameUtilities/libRhythmGameUtilities.macos.template_release.framework
+
       - name: Store SCons Cache
         uses: actions/cache/save@v5
         with:
