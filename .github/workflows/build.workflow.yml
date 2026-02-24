@@ -52,21 +52,16 @@ jobs:
           python -m pip install scons
           choco install mingw
 
-      - name: Restore SCons Cache
-        uses: actions/cache/restore@v5
+      - name: SCons Cache
+        uses: actions/cache@v5
         with:
           path: |
             GodotPlugin/.scons_cache/
             GodotPlugin/.sconsign.dblite
-          key: ${{ matrix.os }}-scons-cache
-
-      - name: Restore Godot C++ Generated Files
-        uses: actions/cache/restore@v5
-        with:
-          path: |
             GodotPlugin/godot-cpp/bin/
             GodotPlugin/godot-cpp/gen/
-          key: ${{ matrix.os }}-godot-cpp-cache
+          key: ${{ matrix.os }}-scons-cache-${{ hashFiles('GodotPlugin/**/*.cpp', 'GodotPlugin/**/*.h') }}
+          restore-keys: ${{ matrix.os }}-scons-cache-
 
       - name: Build Plugin
         working-directory: GodotPlugin/
@@ -80,22 +75,6 @@ jobs:
         run: |
           codesign --force --deep -s - GodotPlugin/build/addons/RhythmGameUtilities/libRhythmGameUtilities.macos.template_debug.framework
           codesign --force --deep -s - GodotPlugin/build/addons/RhythmGameUtilities/libRhythmGameUtilities.macos.template_release.framework
-
-      - name: Store SCons Cache
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            GodotPlugin/.scons_cache/
-            GodotPlugin/.sconsign.dblite
-          key: ${{ matrix.os }}-scons-cache
-
-      - name: Store Godot C++ Generated Files
-        uses: actions/cache/save@v5
-        with:
-          path: |
-            GodotPlugin/godot-cpp/bin/
-            GodotPlugin/godot-cpp/gen/
-          key: ${{ matrix.os }}-godot-cpp-cache
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
