@@ -71,10 +71,17 @@ jobs:
           scons platform=${{ matrix.platform }} target=template_debug arch=${{ matrix.arch }}
 
       - if: matrix.platform == 'macos'
-        name: Sign generated files (macOS)
+        name: Sign and notarize generated files (macOS)
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
         run: |
-          codesign --force --deep -s - GodotPlugin/build/addons/RhythmGameUtilities/libRhythmGameUtilities.macos.template_debug.framework
-          codesign --force --deep -s - GodotPlugin/build/addons/RhythmGameUtilities/libRhythmGameUtilities.macos.template_release.framework
+          ./bin/mac_sign_and_notarize.sh
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
