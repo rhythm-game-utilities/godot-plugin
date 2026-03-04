@@ -70,8 +70,35 @@ jobs:
           scons platform=${{ matrix.platform }} target=template_release arch=${{ matrix.arch }}
           scons platform=${{ matrix.platform }} target=template_debug arch=${{ matrix.arch }}
 
-      - if: matrix.platform == 'macos'
-        name: Sign and notarize generated files (macOS)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: build-${{ matrix.platform }}-${{ matrix.arch }}
+          path: GodotPlugin/build/
+          retention-days: 1
+
+  sign-and-notarize:
+    needs: build-plugin
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: build-macos-universal
+          path: artifacts/
+
+      - name: Move artifacts to build directory
+        run: |
+          mkdir -p addons/RhythmGameUtilities
+          cp -r artifacts/*/* ./
+
+      - name: Sign and notarize generated files (macOS)
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
@@ -86,12 +113,13 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: build-${{ matrix.platform }}-${{ matrix.arch }}
-          path: GodotPlugin/build/
+          name: build-macos-universal
+          path: addons/RhythmGameUtilities/
           retention-days: 1
+          overwrite: true
 
   commit-changes:
-    needs: build-plugin
+    needs: [build-plugin, sign-and-notarize]
     runs-on: ubuntu-latest
 
     permissions:
