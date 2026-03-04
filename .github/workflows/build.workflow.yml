@@ -93,11 +93,6 @@ jobs:
           name: build-macos-universal
           path: artifacts/
 
-      - name: Move artifacts to build directory
-        run: |
-          mkdir -p addons/RhythmGameUtilities
-          cp -r artifacts/*/* ./
-
       - name: Sign and notarize generated files (macOS)
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
@@ -114,7 +109,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: build-macos-universal
-          path: addons/RhythmGameUtilities/
+          path: artifacts/
           retention-days: 1
           overwrite: true
 
@@ -134,12 +129,7 @@ jobs:
       - name: Download all build artifacts
         uses: actions/download-artifact@v7
         with:
-          path: artifacts/
-
-      - name: Move artifacts to build directory
-        run: |
-          mkdir -p addons/RhythmGameUtilities
-          cp -r artifacts/*/* ./
+          path: ./
 
       - name: Setup git
         run: |
