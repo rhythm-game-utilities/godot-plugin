@@ -108,8 +108,6 @@ function sign_and_notarize() {
             exit 1
         fi
 
-        xcrun stapler staple "${FRAMEWORK}"
-
         rm "${ZIP_PATH}"
     done
 }
