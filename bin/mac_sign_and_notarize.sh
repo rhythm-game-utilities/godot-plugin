@@ -27,13 +27,13 @@ if [ -z "${MACOS_CERTIFICATE}" ]; then
     exit 1
 fi
 
-if [ -z "${MACOS_KEYCHAIN_PASSWORD}" ]; then
-    echo "MACOS_KEYCHAIN_PASSWORD has not been set."
+if [ -z "${MACOS_CERTIFICATE_PWD}" ]; then
+    echo "MACOS_CERTIFICATE_PWD has not been set."
     exit 1
 fi
 
-if [ -z "${CERTIFICATE_PASSWORD}" ]; then
-    echo "CERTIFICATE_PASSWORD has not been set."
+if [ -z "${MACOS_KEYCHAIN_PASSWORD}" ]; then
+    echo "MACOS_KEYCHAIN_PASSWORD has not been set."
     exit 1
 fi
 
@@ -60,7 +60,7 @@ import_cert() {
 
     security list-keychains -d user -s "${KEYCHAIN_PATH}" $(security list-keychains -d user | sed 's/\"//g')
 
-    security import "${CERTIFICATE_PATH}" -k "${KEYCHAIN_PATH}" -P "${CERTIFICATE_PASSWORD}" -T /usr/bin/codesign -T /usr/bin/productsign -A
+    security import "${CERTIFICATE_PATH}" -k "${KEYCHAIN_PATH}" -P "${MACOS_CERTIFICATE_PWD}" -T /usr/bin/codesign -T /usr/bin/productsign -A
 
     security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${MACOS_KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}"
 
