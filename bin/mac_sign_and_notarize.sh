@@ -2,6 +2,8 @@
 
 set -e
 
+TARGET_DIR=${1:-$(pwd)}
+
 if [ -z "${APPLE_ID}" ]; then
     echo "APPLE_ID has not been set."
     exit 1
@@ -71,7 +73,7 @@ function sign_and_notarize() {
     VARIANTS=("template_debug" "template_release")
 
     for VARIANT in "${VARIANTS[@]}"; do
-        FRAMEWORK="addons/RhythmGameUtilities/libRhythmGameUtilities.macos.${VARIANT}.framework"
+        FRAMEWORK="${TARGET_DIR%/}/libRhythmGameUtilities.macos.${VARIANT}.framework"
 
         ZIP_PATH="${FRAMEWORK}.zip"
 

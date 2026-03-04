@@ -103,7 +103,7 @@ jobs:
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
           MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
         run: |
-          ./bin/mac_sign_and_notarize.sh
+          ./bin/mac_sign_and_notarize.sh artifacts/addons/RhythmGameUtilities/
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
