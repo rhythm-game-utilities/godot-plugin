@@ -130,6 +130,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           path: ./
+          merge-multiple: true
 
       - name: Setup git
         run: |
