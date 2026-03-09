@@ -63,7 +63,7 @@ jobs:
             GodotPlugin/.sconsign.dblite
             GodotPlugin/godot-cpp/bin/
             GodotPlugin/godot-cpp/gen/
-          key: ${{ matrix.platform }}-${{ matrix.arch }}-scons-cache-${{ hashFiles('GodotPlugin/**/*.cpp', 'GodotPlugin/**/*.h') }}
+          key: ${{ matrix.platform }}-${{ matrix.arch }}-scons-cache-${{ hashFiles('GodotPlugin/godot-cpp/**/*.cpp', 'GodotPlugin/godot-cpp/**/*.h') }}
           restore-keys: ${{ matrix.platform }}-${{ matrix.arch }}-scons-cache-
 
       - name: Build Plugin
