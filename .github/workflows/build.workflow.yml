@@ -139,6 +139,10 @@ jobs:
           path: ./
           merge-multiple: true
 
+      - name: Remove reloadable option from .gdextension config
+        run: |
+          sed -i '' '/reloadable/d' addons/RhythmGameUtilities/RhythmGameUtilities.gdextension
+
       - name: Setup git
         run: |
           git config user.name 'github-actions[bot]'
