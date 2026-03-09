@@ -49,6 +49,8 @@ jobs:
 
       - if: matrix.os == 'ubuntu-latest' && matrix.platform == 'web'
         uses: HandcrankEngine/install-emscripten-package@v0.1.0
+        with:
+          EMSDK_VERSION: "3.1.62"
 
       - if: matrix.os == 'macos-latest'
         name: Install dependencies (macOS)
