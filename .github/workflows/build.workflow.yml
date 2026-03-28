@@ -18,11 +18,11 @@ jobs:
           - os: ubuntu-latest
             platform: web
             arch: wasm32
-            scons-flags: threads=yes
+            scons-flags: threads=yes dlink_enabled=yes
           - os: ubuntu-latest
             platform: web
             arch: wasm32
-            scons-flags: threads=no
+            scons-flags: threads=no dlink_enabled=yes
           - os: macos-latest
             platform: macos
             arch: universal
