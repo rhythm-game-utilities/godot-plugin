@@ -70,7 +70,7 @@ jobs:
 
       - name: Store Scons Flag as HASH
         run: |
-          echo "SCONS_FLAGS_HASH=$(echo '${{ matrix.scons-flags }}' || 'default' | shasum -a 256 | cut -d ' ' -f 1)" >> $GITHUB_ENV
+          echo "SCONS_FLAGS_HASH=$(echo "${{ matrix.scons-flags || 'default' }}" | shasum -a 256 | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
       - name: SCons Cache
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
