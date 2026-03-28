@@ -87,8 +87,8 @@ jobs:
         working-directory: GodotPlugin/
         shell: bash
         run: |
-          scons platform=${{ matrix.platform }} target=template_release arch=${{ matrix.arch }}
-          scons platform=${{ matrix.platform }} target=template_debug arch=${{ matrix.arch }}
+          scons platform=${{ matrix.platform }} target=template_release arch=${{ matrix.arch }} ${{ matrix.scons-flags }}
+          scons platform=${{ matrix.platform }} target=template_debug arch=${{ matrix.arch }} ${{ matrix.scons-flags }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
