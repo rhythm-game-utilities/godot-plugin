@@ -18,6 +18,11 @@ jobs:
           - os: ubuntu-latest
             platform: web
             arch: wasm32
+            scons-flags: threads=yes
+          - os: ubuntu-latest
+            platform: web
+            arch: wasm32
+            scons-flags: threads=no
           - os: macos-latest
             platform: macos
             arch: universal
@@ -63,6 +68,10 @@ jobs:
           python -m pip install scons
           choco install mingw
 
+      - name: Store Scons Flag as HASH
+        run: |
+          echo "SCONS_FLAGS_HASH=$(echo '${{ matrix.scons-flags }}' || 'default' | shasum -a 256 | cut -d ' ' -f 1)" >> $GITHUB_ENV
+
       - name: SCons Cache
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
@@ -71,8 +80,8 @@ jobs:
             GodotPlugin/.sconsign.dblite
             GodotPlugin/godot-cpp/bin/
             GodotPlugin/godot-cpp/gen/
-          key: ${{ matrix.platform }}-${{ matrix.arch }}-scons-cache-${{ hashFiles('GodotPlugin/godot-cpp/**/*.cpp', 'GodotPlugin/godot-cpp/**/*.h') }}
-          restore-keys: ${{ matrix.platform }}-${{ matrix.arch }}-scons-cache-
+          key: ${{ matrix.platform }}-${{ matrix.arch }}-${{ env.SCONS_FLAGS_HASH }}-scons-cache-${{ hashFiles('GodotPlugin/godot-cpp/**/*.cpp', 'GodotPlugin/godot-cpp/**/*.h') }}
+          restore-keys: ${{ matrix.platform }}-${{ matrix.arch }}-${{ env.SCONS_FLAGS_HASH }}-scons-cache-
 
       - name: Build Plugin
         working-directory: GodotPlugin/
