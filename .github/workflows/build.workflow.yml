@@ -69,6 +69,7 @@ jobs:
           choco install mingw
 
       - name: Store Scons Flag as HASH
+        shell: bash
         run: |
           echo "SCONS_FLAGS_HASH=$(echo "${{ matrix.scons-flags || 'default' }}" | shasum -a 256 | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
