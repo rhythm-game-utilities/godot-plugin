@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           repository: neogeek/rhythm-game-utilities
           fetch-depth: 0
@@ -53,7 +53,7 @@ jobs:
           sudo apt-get install -y build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev libwayland-dev
 
       - if: matrix.os == 'ubuntu-latest' && matrix.platform == 'web'
-        uses: HandcrankEngine/install-emscripten-package@8213812e8b148042942fc3c92d787ccfa823dcfc # v0.1.0
+        uses: HandcrankEngine/install-emscripten-package@36cc758cb3c58a74460fa8d033120d0f2b281005 # v0.2.0
         with:
           EMSDK_VERSION: "3.1.62"
 
@@ -74,7 +74,7 @@ jobs:
           echo "SCONS_FLAGS_HASH=$(echo -n "${{ matrix.scons-flags || 'default' }}" | shasum -a 256 | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
       - name: SCons Cache
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             GodotPlugin/.scons_cache/
@@ -92,7 +92,7 @@ jobs:
           scons platform=${{ matrix.platform }} target=template_debug arch=${{ matrix.arch }} ${{ matrix.scons-flags }} --debug=explain
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: build-${{ matrix.platform }}-${{ matrix.arch }}${{ matrix.scons-flags && format('-{0}', env.SCONS_FLAGS_HASH) || '' }}
           path: GodotPlugin/build/
@@ -112,7 +112,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
 
@@ -123,7 +123,7 @@ jobs:
           path: artifacts/
 
       - name: Sign and notarize generated files (macOS)
-        uses: neogeek/sign-and-notarize@v1.0.0
+        uses: neogeek/sign-and-notarize@af2481fa5c971390851cd6d293a680af042b1d88 # v1.0.0
         with:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
@@ -135,7 +135,7 @@ jobs:
           FRAMEWORK_PATH: ${{ matrix.framework_path }}
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: build-macos-universal
           path: artifacts/
@@ -151,7 +151,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
 
