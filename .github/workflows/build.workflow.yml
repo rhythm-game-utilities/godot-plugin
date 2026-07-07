@@ -124,7 +124,7 @@ jobs:
 
       - name: Sign and notarize generated files (macOS)
         uses: neogeek/sign-and-notarize@v1.0.0
-        env:
+        with:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
           APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
