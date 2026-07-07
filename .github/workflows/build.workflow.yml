@@ -116,12 +116,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download all build artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: build-macos-universal
-          path: artifacts/
-
       - name: Sign and notarize generated files (macOS)
         uses: neogeek/sign-and-notarize@af2481fa5c971390851cd6d293a680af042b1d88 # v1.0.0
         with:
