@@ -115,7 +115,7 @@ jobs:
           path: artifacts/
 
       - name: Sign and notarize generated macOS files (Debug)
-        uses: neogeek/sign-and-notarize@80f2dda24ee6481f8d5f9efb588e96526d5238d5 # v1.1.1
+        uses: neogeek/sign-and-notarize@50936f92580b2593f6b13efcc0e70bcdf0c35f35 # v1.1.2
         with:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
@@ -127,7 +127,7 @@ jobs:
           FRAMEWORK_PATH: "addons/RhythmGameUtilities/libRhythmGameUtilities.macos.template_debug.framework"
 
       - name: Sign and notarize generated macOS files (Release)
-        uses: neogeek/sign-and-notarize@80f2dda24ee6481f8d5f9efb588e96526d5238d5 # v1.1.1
+        uses: neogeek/sign-and-notarize@50936f92580b2593f6b13efcc0e70bcdf0c35f35 # v1.1.2
         with:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
