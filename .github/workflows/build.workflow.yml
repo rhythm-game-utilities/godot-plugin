@@ -32,6 +32,15 @@ jobs:
           - os: windows-latest
             platform: windows
             arch: x86_32
+          - os: ubuntu-latest
+            platform: android
+            arch: arm64
+          - os: ubuntu-latest
+            platform: android
+            arch: x86_64
+          - os: macos-latest
+            platform: ios
+            arch: arm64
 
     runs-on: ${{ matrix.os }}
 
@@ -58,7 +67,7 @@ jobs:
           EMSDK_VERSION: "3.1.39"
 
       - if: matrix.os == 'macos-latest'
-        name: Install dependencies (macOS)
+        name: Install dependencies (macOS & iOS)
         run: |
           brew install scons
 
